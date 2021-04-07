@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'blog.apps.BlogConfig',
     'crispy_forms',
+    'django.contrib.humanize',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
