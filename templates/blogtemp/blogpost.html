@@ -3,6 +3,8 @@
 {% block blogactive %}active{% endblock blogactive %}
 {% block body %}
 {% load humanize %}
+{% load extras %}
+
 <style>
 img 
 {
@@ -30,6 +32,7 @@ img
       <input type="text" class="form-control" id="comment" name="comment" placeholder="Enter Comment">
   </div>
   <input type="hidden" name="postSno" value="{{post.Sno}}">
+  <input type="hidden" name="ParentSno" value="">
   <div class="col-auto">
     <button type="submit" class="btn btn-dark mb-3" value="Post">Post</button>
   </div>
@@ -47,6 +50,50 @@ img
 <div class="col-md-11"><b>{{comment.user.username}}</b> <span class="badge bg-info text-dark"> {{comment.timestamp | naturaltime}} </span>
 <div class="my-3">{{comment.comment}}</div>
 
+<div class="reply mx-0">
+{% if user.is_authenticated %}
+<button class="btn btn-link " type="button" data-bs-toggle="collapse" data-bs-target="#replyBox{{comment.Sno}}" aria-expanded="false" aria-controls="replyBox{{comment.Sno}}">
+  Reply
+</button>
+{%endif%}
+
+<div class="collapse" id="replyBox{{comment.Sno}}">
+<div class="card card-body">
+  <form method="post" action="/blog/postComment" class="row g-3">
+    {% csrf_token %}
+      <div class="col-5 form-group">
+        
+        
+          <input type="text" class="form-control" id="comment" name="comment" placeholder="Reply">
+          <input type="hidden" name="ParentSno" value="{{comment.Sno}}">
+      </div>
+      <input type="hidden" name="postSno" value="{{post.Sno}}">
+      <div class="col-auto">
+        <button type="submit" class="btn btn-dark mb-3" value="Post">Post</button>
+       </div>
+    </form>
+</div>
+
+</div>
+<div class="replies  my-2">
+{% for reply in replyDict|get_val:comment.Sno %}
+<div class="row">
+<div class="col-md-1 my-2"><img src="../static/user.png" class="rounded mx-auto d-block w-100 h-100  border border-dark">
+</div>
+<div class="col-md-11 my-2">
+{{reply.comment}}
+<b>{{reply.user.username}}</b> <span class="badge bg-info text-dark"> {{reply.timestamp | naturaltime}} </span>
+<div class="my-3">{{reply.comment}}</div>
+<br>
+</div>
+</div>
+
+{% endfor %}
+
+</div>
+</div>
+</div>
+
 
 </div>
 
@@ -56,4 +103,5 @@ img
 
 
 </div>
+
 {% endblock body %}
