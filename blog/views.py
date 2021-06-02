@@ -1,7 +1,10 @@
 from django.shortcuts import render,HttpResponse,redirect
 from blog.models import Post,BlogComment
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.contrib import messages
 import datetime
+from django.urls import reverse
 from .forms import *
 from blog.templatetags import extras
 
@@ -18,6 +21,7 @@ def blogpost(request,slug):
     post=Post.objects.filter(slug=slug).first()
     comments = BlogComment.objects.filter(post=post,parent=None)
     replies = BlogComment.objects.filter(post=post).exclude(parent=None)
+   
     replyDict = {}
     for reply in replies:
         if reply.parent.Sno not in replyDict.keys():
@@ -61,9 +65,6 @@ def postComment(request):
             comment = BlogComment(comment=comment,user=user,post=post,parent=parent)
             comment.save()
             messages.success(request,"Your reply has been posted successfully!")
-
-
-
-    
-
     return redirect(f"/blog/{post.slug}")
+
+

@@ -59,7 +59,7 @@ def search(request):
     if len(query) > 78:
         allposts = []
     else:
-        post_title_ids = list(Post.objects.filter(title__icontains=query).values_list('id', flat=True))
+        #post_title_ids = list(Post.objects.filter(title__icontains=query).values_list('id', flat=True))
         posts_content_ids = list(Post.objects.filter(content__icontains=query).values_list('id', flat=True))
         #posts_timestamp_ids = list(Post.objects.filter(timestamp_icontains=query).values_list('id', flat=True))
         ids_list = post_title_ids + posts_content_ids 
