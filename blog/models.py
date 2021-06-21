@@ -14,11 +14,11 @@ class Post(models.Model):
     title=models.CharField(max_length=255)
     content=models.TextField()
     author=models.CharField(max_length=13)
-    slug =models.SlugField(verbose_name="Slug",allow_unicode=True,unique=True,max_length=130)
+    slug=models.CharField(max_length=130)
     timestamp=models.DateTimeField(auto_now_add=True,blank=True)
     img = models.ImageField( upload_to="blogImg",default="blogImg/2.jpg")
-    likes = models.ManyToManyField(User, related_name='blogpost_like')
-
+    
+   
     class Meta:
        ordering = ['-timestamp']     
     
@@ -28,7 +28,9 @@ class Post(models.Model):
     def slug_generator(sender, instance, *args, **kwargs):
         if not instance.slug:
             instance.slug = unique_slug_generator(instance)
-        pre_save.connect(slug_generator, sender = Post)
+            pre_save.connect(slug_generator, sender = Post)
+
+   
 
 
 

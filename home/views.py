@@ -55,23 +55,26 @@ def blogs(request):
     context = {'allpost':allpost}
     return render(request,'home/blogs.html',context)
 def search(request):
-    query = request.GET['query']
-    if len(query) > 78:
-        allposts = []
+    
+    if request.method == 'GET':
+        query= request.GET.get('query')
+
+        submitbutton= request.GET.get('submit')
+
+        if query is not None:
+            lookups= Q(title__icontains=query) | Q(content__icontains=query)
+
+            results= Post.objects.filter(lookups).distinct()
+
+            context={'results': results,
+                     'submitbutton': submitbutton}
+
+            return render(request, 'home/search.html', context)
+
+        else:
+            return render(request, 'home/search.html')
     else:
-        #post_title_ids = list(Post.objects.filter(title__icontains=query).values_list('id', flat=True))
-        posts_content_ids = list(Post.objects.filter(content__icontains=query).values_list('id', flat=True))
-        #posts_timestamp_ids = list(Post.objects.filter(timestamp_icontains=query).values_list('id', flat=True))
-        ids_list = post_title_ids + posts_content_ids 
-
-        myposts = Post.objects.filter(id__in=ids_list)
-       
-    if myposts.count() == 0:
-        messages.warning(request,"No results found!")
-
-
-    context = {'allpost':myposts,'query':query}
-    return render(request,'home/search.html',context)
+        return render(request, 'home/search.html')
 
 
 def handlesignup(request):
